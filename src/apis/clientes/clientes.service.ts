@@ -3,13 +3,14 @@ import { Injectable } from '@nestjs/common';
 // Importando Serviços a serem consumidos
 import { PrismaService } from '../prisma/prisma.service';
 import { LoggerService } from '../../common/logger/logger.service';
+import { UsersService } from '../../auth/users/users.service';
 // Importando DTOs de Validação
 import { CreateClienteDto } from './dto/create-cliente.dto';
 import { UpdateClienteDto } from './dto/update-cliente.dto';
 // Importando Métodos a serem utilizados
 import getAllClientes from './methods/getAllClientes';
 import getClienteById from './methods/getClienteById';
-//import createCliente from './methods/createCliente';
+import createCliente from './methods/createCliente';
 //import updateCliente from './methods/updateCliente';
 //import deleteCliente from './methods/deleteCliente';
 //import depositar from './methods/depositar';
@@ -20,6 +21,7 @@ export class ClientesService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly logger: LoggerService,
+    private readonly usersService: UsersService,
   ) {}
 
   async getAll() {
@@ -30,11 +32,11 @@ export class ClientesService {
     return getClienteById(this.prisma, this.logger, id);
   }
 
-  /*async create(data: CreateClienteDto) {
-    return createCliente(this.prisma, this.logger, data);
+  async create(data: CreateClienteDto) {
+    return createCliente(this.prisma, this.logger, this.usersService, data);
   }
 
-  async update(id: number, data: UpdateClienteDto) {
+  /*async update(id: number, data: UpdateClienteDto) {
     return updateCliente(this.prisma, this.logger, id, data);
   }
 

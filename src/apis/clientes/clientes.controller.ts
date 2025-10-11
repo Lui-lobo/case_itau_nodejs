@@ -1,5 +1,5 @@
 // Importando modulos comuns do Nest
-import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe, Logger, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe, Logger, HttpCode, UseGuards } from '@nestjs/common';
 // Importando decoradores de documentação do swagger
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 // Importando serviços do cliente 
@@ -11,7 +11,11 @@ import { UpdateClienteDto } from './dto/update-cliente.dto';
 import { TransactionDto } from './dto/transaction.dto';
 // Importando modelo do cliente
 import { Cliente } from '@prisma/client';
-
+// Importando guards
+import { ClientAuthGuard } from '../../auth/clients.guard';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { returnCreateClientDto } from './dto/return-create-cliente.dto';
+@UseGuards(ClientAuthGuard, JwtAuthGuard)
 @ApiTags('clientes')
 @Controller('api/v1/clientes')
 export class ClientesController {
@@ -49,20 +53,20 @@ export class ClientesController {
     return result;
   }
 
-  /*@Post()
+  @Post()
   @ApiOperation({ summary: 'Cria um novo cliente' })
-  create(@Body() data: CreateClienteDto): Promise<Cliente> {
-    const op = `${this.context}:create`;
-    this.logger.track(op, { action: 'start' });
+  create(@Body() data: CreateClienteDto): Promise<returnCreateClientDto> {
+    const context = `${this.context}:create`;
+    this.logger.track(context, { email: data.email, action: 'start' }, context);
 
     const result = this.clientesService.create(data);
 
-    this.logger.track(op, { action: 'end', result });
+    this.logger.track(context, { email: data.email, action: 'end' }, context);
 
     return result;
   }
 
-  @Put(':id')
+  /*@Put(':id')
   @HttpCode(204)
   @ApiOperation({ summary: 'Atualiza um cliente existente' })
   update(@Param('id', ParseIntPipe) id: number, @Body() data: UpdateClienteDto) {

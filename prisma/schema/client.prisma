@@ -1,12 +1,15 @@
 model Client {
-  id            Int       @id @default(autoincrement())
+  id            Int              @id @default(autoincrement())
   name          String
-  clientId      String    @unique
+  clientId      String           @unique
   clientSecret  String
-  allowedRoutes Json      @default("[]")
-  active        Boolean   @default(true)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  allowedRoutes Json             @default("[]")
+  active        Boolean          @default(true)
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  // Relação N:N com Cliente
+  clientes      ClienteClient[]
 }
 
 // Esse modelo é referente ao client da aplicação
