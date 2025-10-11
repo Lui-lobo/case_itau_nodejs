@@ -1,0 +1,13 @@
+model Client {
+  id            Int       @id @default(autoincrement())
+  name          String
+  clientId      String    @unique
+  clientSecret  String
+  allowedRoutes Json      @default("[]")
+  active        Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+// Esse modelo é referente ao client da aplicação
+// A estrutura responsável pelo cliente (usuário), é o modelo de nome cliente.prisma

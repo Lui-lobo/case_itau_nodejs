@@ -1,0 +1,9 @@
+model Transacao {
+  id          Int      @id @default(autoincrement())
+  clienteId   Int
+  valor       Decimal
+  tipo        String   // "DEPOSITO" | "SAQUE"
+  createdAt   DateTime @default(now())
+  // 1 transação -> 1 Cliente
+  cliente     Cliente  @relation(fields: [clienteId], references: [id])
+}

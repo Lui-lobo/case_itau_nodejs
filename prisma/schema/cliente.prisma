@@ -1,0 +1,11 @@
+model Cliente {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  email     String   @unique
+  saldo     Decimal  @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+    // 1 cliente -> N transações
+  transacoes  Transacao[]
+}
