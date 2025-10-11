@@ -18,7 +18,7 @@ import { PassportModule } from '@nestjs/passport';
     PassportModule.register({ defaultStrategy: 'jwt' }), // 👈 necessário
     JwtModule.register({
       global: true,
-      secret: process.env.JWT_SECRET || 'triibo-secret',
+      secret: process.env.JWT_SECRET || 'default-secret',
       signOptions: { expiresIn: '1h' },
     }),
     CryptoModule,
