@@ -1,5 +1,5 @@
 // Importando modulos comuns do Nest
-import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe, HttpCode, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe, HttpCode, UseGuards, Query } from '@nestjs/common';
 // Importando decoradores de documentação do swagger
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 // Importando serviços do cliente 
@@ -98,17 +98,51 @@ export class ClientesController {
     return result;
   }
 
-  /*@Post(':id/depositar')
+  @Post(':id/depositar')
   @ApiOperation({ summary: 'Realiza depósito no saldo do cliente' })
   depositar(@Param('id', ParseIntPipe) id: number, @Body() { valor }: TransactionDto) {
-    logger.log(`Depositando ${valor} no cliente ID: ${id}`);
-    return this.clientesService.depositar(id, valor);
+    const context = `${this.context}:deposit`;
+    this.logger.track(context, { id, action: 'start' }, context);
+
+    const result = this.clientesService.depositar(id, valor);
+
+    this.logger.track(context, { id, result, action: 'end' }, context);
+
+    return result;
   }
 
   @Post(':id/sacar')
   @ApiOperation({ summary: 'Realiza saque no saldo do cliente' })
   sacar(@Param('id', ParseIntPipe) id: number, @Body() { valor }: TransactionDto) {
-    logger.log(`Sacando ${valor} do cliente ID: ${id}`);
-    return this.clientesService.sacar(id, valor);
-  }*/
+    const context = `${this.context}:withdraw`;
+    this.logger.track(context, { id, action: 'start' }, context);
+
+    const result = this.clientesService.sacar(id, valor);
+
+    this.logger.track(context, { id, result, action: 'end' }, context);
+
+    return result;
+  }
+
+  @Get(':id/transacoes')
+  @ApiOperation({
+    summary: 'Lista todas as transações de um cliente',
+    description:
+      'Retorna o histórico de transações (créditos e débitos) de um cliente, com suporte a filtros e paginação.',
+  })
+  async getTransacoes(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('tipo') tipo?: 'credito' | 'debito',
+    @Query('page') page = 1,
+    @Query('limit') limit = 10,
+  ) {
+    const context = `${this.context}:transactions`;
+    this.logger.track(context, { id, action: 'start' }, context);
+
+    const result = this.clientesService.getTransacoes(id, tipo, Number(page), Number(limit));
+
+    this.logger.track(context, { id, result, action: 'end' }, context);
+
+    return result;
+  }
 }

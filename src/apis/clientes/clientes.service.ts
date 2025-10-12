@@ -14,8 +14,9 @@ import getClienteById from './methods/getClienteById';
 import createCliente from './methods/createCliente';
 import updateCliente from './methods/updateCliente';
 import deleteCliente from './methods/deleteCliente';
-//import depositar from './methods/depositar';
-//import sacar from './methods/sacar';
+import depositar from './methods/depositar';
+import sacar from './methods/sacar';
+import getClienteTransacoes from './methods/getClienteTransacoes';
 
 @Injectable()
 export class ClientesService {
@@ -46,11 +47,15 @@ export class ClientesService {
     return deleteCliente(this.prisma, this.logger, id);
   }
 
-  /*async depositar(id: number, valor: number) {
+  async depositar(id: number, valor: number) {
     return depositar(this.prisma, this.logger, id, valor);
   }
 
   async sacar(id: number, valor: number) {
     return sacar(this.prisma, this.logger, id, valor);
-  }*/
+  }
+
+  async getTransacoes(id: number, tipo?: 'credito' | 'debito', page?: number, limit?: number) {
+    return getClienteTransacoes(this.prisma, this.logger, id, tipo, page, limit);
+  }
 }

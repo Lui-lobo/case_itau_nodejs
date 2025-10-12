@@ -1,7 +1,7 @@
 // Definindo decorador de propriedade do swagger
 import { ApiProperty } from '@nestjs/swagger';
 // Importando validator de classe de requisição
-import { IsNotEmpty, IsEmail, MaxLength, IsString, MinLength, IsInt } from 'class-validator';
+import { IsEmail, MaxLength, IsInt } from 'class-validator';
 
 export class returnCreateClientDto {
   id: number;

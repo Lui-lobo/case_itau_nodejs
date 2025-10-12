@@ -11,8 +11,6 @@ import { PrismaService } from '../apis/prisma/prisma.service';
 import { LoggerService } from '../common/logger/logger.service';
 // Importando requisição do express
 import { Request } from 'express';
-// Importando cliente do prisma
-import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ClientAuthGuard implements CanActivate {
@@ -47,7 +45,7 @@ export class ClientAuthGuard implements CanActivate {
       throw new UnauthorizedException('Invalid client credentials');
     }
 
-    // 🔧 Tratando allowedRoutes (pode ser JSON/string)
+    // Tratando allowedRoutes (pode ser JSON/string)
     let allowedRoutes: string[] = [];
 
     if (Array.isArray(client.allowedRoutes)) {
@@ -61,7 +59,7 @@ export class ClientAuthGuard implements CanActivate {
       allowedRoutes = [];
     }
 
-    // 🔐 Verificação de permissão de rota
+    // Verificação de permissão de rota
     const route = req.route?.path || req.originalUrl;
 
     const isAllowed =
@@ -76,7 +74,7 @@ export class ClientAuthGuard implements CanActivate {
       throw new ForbiddenException('Client not allowed for this route');
     }
 
-    // ✅ Sucesso — anexa o client ao request para uso posterior
+    // Sucesso — anexa o client ao request para uso posterior
     req['client'] = client;
     this.logger.track(
       op,

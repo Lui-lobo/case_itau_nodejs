@@ -13,7 +13,7 @@ export default async function getAllClientes(
 
   logger.track(operation, { action: 'start' });
 
-  const clientes = await prisma.cliente.findMany({ orderBy: { id: 'asc' } });
+  const clientes = await prisma.cliente.findMany({ where: { active: true } ,orderBy: { id: 'asc' } });
 
   logger.track(operation, {
     action: 'end',
