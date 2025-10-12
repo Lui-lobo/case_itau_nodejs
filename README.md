@@ -1,29 +1,113 @@
-# Case de engenharia Itau - .NodeJS
+# 🏦 Case Itaú – API Node.js (NestJS + Prisma)
 
-## Introdução
-Neste projeto esta sendo utilizada a base de dados sqlite com a seguinte tabela:
+API desenvolvida em **Node.js com NestJS e Prisma ORM**, estruturada para oferecer **alta escalabilidade, segurança e padronização**, seguindo os princípios de arquitetura **MSC (Model–Service–Controller)** e boas práticas modernas de desenvolvimento backend.
 
-    Tabela: CLIENTES > "Registro relacionados ao cadastro de clientes"
-	- id    - INTEGER NOT NULL AUTOINCREMENT PRIMARY KEY
-	- nome  - TEXT    NOT NULL
-	- email - TEXT    NOT NULL UNIQUE
-	- saldo - FLOAT
+---
 
-No projeto foi disponibilizada uma API de Clientes com os metodos abaixo realizando acoes diretas na base de dados:
+## 📑 Sumário
 
-	GET    clientes                - LISTAR TODOS OS CLIENTES CADASTRADOS
-	GET    clientes/{ID}           - RETORNAR OS DETALHES DE UM DETERMINADO CLIENTES PELO ID
-	POST   clientes                - REALIZA O CADASTRO DE UM NOVO CLIENTE
-	PUT    clientes/{ID}           - EDITA O CADASTRO DE UM CLIENTE JÁ EXISTENTE
-	DELETE clientes/{ID}           - EXCLUI O CADASTRO DE UM CLIENTE
-	POST   clientes/{ID}/depositar - ADICIONA OU SUBTRAI DETERMINADO VALOR DO SALDO DE UM CLIENTE
-    POST   clientes/{ID}/sacar     - ADICIONA OU SUBTRAI DETERMINADO VALOR DO SALDO DE UM CLIENTE
+1. [📘 Descrição Geral](#-descrição-geral)
+2. [🏗️ Arquitetura do Projeto](#️-arquitetura-do-projeto)
+3. [⚙️ Tecnologias e Bibliotecas](#️-tecnologias-e-bibliotecas)
+4. [🧱 Estrutura de Pastas](#-estrutura-de-pastas)
+5. [🔐 Segurança e Autenticação](#-segurança-e-autenticação)
+6. [🧰 Boas Práticas Aplicadas](#-boas-práticas-aplicadas)
+7. [🧠 Padrão de Logs e Observabilidade](#-padrão-de-logs-e-observabilidade)
+8. [🧪 Testes Unitários e de Integração](#-testes-unitários-e-de-integração)
+9. [🚀 Execução e Scripts](#-execução-e-scripts)
+10. [📈 Futuras Melhorias](#-futuras-melhorias)
+11. [📄 Acesso à Documentação Swagger](#-acesso-à-documentação-swagger)
+12. [👨‍💻 Autor](#-autor)
 
-## Ações a serem realizadas
-1. Faça o fork do projeto no seu github. Não realize commits na branch main e nem crie novas branchs.
-2. O código da api de clientes faz mal uso dos objetos, não segue boas práticas e não possui qualidade. Refatore o codigo utilizando as melhores bibliotecas, praticas, patterns e garanta a qualidade da aplicação. Fique a vontade para mudar o que achar necessário.
-3. O controle de saldo do cliente possui um erro. Identifique e implemente a correção
-4. Para nós segurança é um tema sério, implemente as ações que achar prudente para garantir a segurança da sua aplicação
-5. Utilizando o Angular, crie uma aplicação web  que consuma todos os metodos da API de clientes
+---
 
-Após finalizar o case, envie o link do seu github com a solução final para o e-mail andre.gattini@itau-unibanco.com.br
+## 📘 Descrição Geral
+
+Esta aplicação simula o backend de um sistema bancário modularizado, com foco em:
+
+- **Gestão de clientes e transações (depósitos, saques e saldo)**  
+- **Autenticação segura com JWT e Clients registrados**  
+- **Camadas desacopladas (Controller, Service, Model)**  
+- **Auditoria, logs e rastreamento por request**
+
+A arquitetura foi projetada para **crescimento sustentável**, **testabilidade** e **resiliência**, adotando princípios inspirados em **Clean Architecture** e **Domain-Driven Design (DDD)**.
+
+---
+
+## 🏗️ Arquitetura do Projeto
+
+O projeto segue o padrão **MSC (Model–Service–Controller)**, onde cada módulo tem responsabilidades bem definidas:
+
+| Camada | Responsabilidade | Localização |
+|--------|------------------|-------------|
+| **Model** | Representa as entidades e acesso ao banco via Prisma ORM | `/prisma/schema` |
+| **Service** | Contém a lógica de negócio e chamadas aos métodos de dados | `/src/apis/**/methods/` |
+| **Controller** | Expõe endpoints HTTP e orquestra chamadas aos serviços | `/src/apis/**.controller.ts` |
+
+### 🧩 Fluxo da Requisição
+
+Request → Controller → Service → Prisma → Database → Response
+Cada módulo é **isolado e testável**, e os serviços chamam métodos modulares (em `/methods`), o que permite **granularidade nos testes unitários** e manutenção simplificada.
+
+---
+
+## ⚙️ Tecnologias e Bibliotecas
+
+| Categoria | Tecnologia |
+|------------|------------|
+| **Framework Backend** | [NestJS 11](https://nestjs.com/) |
+| **ORM / Database** | [Prisma 6.17](https://www.prisma.io/) |
+| **Banco Padrão** | SQLite (padrão dev) / PostgreSQL (suporte futuro) |
+| **Autenticação** | JWT + Passport |
+| **Criptografia** | bcryptjs |
+| **Validação** | class-validator + class-transformer |
+| **Documentação** | Swagger (auto gerada) |
+| **Logs e Observabilidade** | Logger customizado com Request ID Tracking |
+| **Testes** | Jest + Supertest (unitários e integração) |
+
+---
+
+## 🧱 Estrutura de Pastas
+
+```bash
+src/
+├── apis/
+│   ├── clientes/
+│   │   ├── clientes.controller.ts
+│   │   ├── clientes.service.ts
+│   │   ├── methods/
+│   │   │   ├── getAllClientes.ts
+│   │   │   ├── getClienteById.ts
+│   │   │   ├── depositar.ts
+│   │   │   ├── sacar.ts
+│   │   │   ├── updateCliente.ts
+│   │   │   └── deleteCliente.ts
+│   │   └── dto/
+│   │       ├── create-cliente.dto.ts
+│   │       ├── update-cliente.dto.ts
+│   │       └── transaction.dto.ts
+│   └── prisma/
+│       ├── prisma.module.ts
+│       └── prisma.service.ts
+│
+├── auth/
+│   ├── users/
+│   │   ├── users.controller.ts
+│   │   ├── users.service.ts
+│   │   ├── methods/
+│   │   │   ├── registerCliente.ts
+│   │   │   ├── loginCliente.ts
+│   │   │   └── validateById.ts
+│   ├── clients.guard.ts
+│   └── guards/jwt-auth.guard.ts
+│
+├── common/
+│   ├── logger/logger.service.ts
+│   ├── crypto/crypto.service.ts
+│   └── health/health.controller.ts
+│
+└── __tests__/
+    ├── unit/
+    ├── integration/
+    └── setup/
+
