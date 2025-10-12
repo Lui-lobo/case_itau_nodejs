@@ -47,7 +47,7 @@ export default async function depositar(
     const [updatedCliente, transacao] = await prisma.$transaction([
       prisma.cliente.update({
         where: { id },
-        data: { saldo: newValue },
+        data: { saldo: cliente.saldo.add(newValue) },
       }),
       prisma.transacao.create({
         data: {

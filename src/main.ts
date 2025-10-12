@@ -30,7 +30,6 @@ async function bootstrap() {
     .setVersion('1.0.0')
     .addBearerAuth() // Para endpoints com Auth
     .addTag('clientes', 'Operações relacionadas a clientes')
-    .addTag('transacoes', 'Operações financeiras')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

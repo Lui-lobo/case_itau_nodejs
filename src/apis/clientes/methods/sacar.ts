@@ -40,7 +40,7 @@ export default async function sacar(
     throw new BadRequestException('Cliente inativo. Operação não permitida.');
   }
 
-  // 🔹 Verifica saldo suficiente
+  // Verifica saldo suficiente
   const saldoAtual = new Prisma.Decimal(cliente.saldo);
   const valorDecimal = new Prisma.Decimal(valor);
 
@@ -52,7 +52,7 @@ export default async function sacar(
     throw new BadRequestException('Saldo insuficiente para realizar o saque.');
   }
 
-  // 🔹 Executa a transação atômica
+  // Executa a transação atômica
   try {
     const [updatedCliente, transacao] = await prisma.$transaction([
       prisma.cliente.update({

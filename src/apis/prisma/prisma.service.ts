@@ -3,7 +3,7 @@ import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 // Importando o cliente do prisma
 import { Prisma, PrismaClient } from '@prisma/client';
 // Importando serviços
-import { LoggerService } from 'src/common/logger/logger.service';
+import { LoggerService } from '../../common/logger/logger.service';
 
 @Injectable()
 export class PrismaService
