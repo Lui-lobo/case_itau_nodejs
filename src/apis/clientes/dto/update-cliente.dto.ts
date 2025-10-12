@@ -1,6 +1,22 @@
-// Importando decorador de propriedade parcial do swagger
-import { PartialType } from '@nestjs/swagger';
-// Importando DTO de criação do cliente (Uma atualização manipula parcialmente dados existentes do cliente)
-import { CreateClienteDto } from './create-cliente.dto';
+// Importando decorador de propriedade opcional do swagger
+import { ApiPropertyOptional } from '@nestjs/swagger';
+// Importando decoradores de validação de classe
+import { IsEmail, IsOptional, IsString, MinLength, ValidateIf } from 'class-validator';
+export class UpdateClienteDto {
+  @ApiPropertyOptional({ example: 'Novo Nome' })
+  @IsOptional()
+  @IsString()
+  nome?: string;
 
-export class UpdateClienteDto extends PartialType(CreateClienteDto) {}
+  @ApiPropertyOptional({ example: 'novoemail@teste.com' })
+  @ValidateIf((o) => o.email !== undefined && o.email !== null)
+  @IsOptional()
+  @IsEmail()
+  email?: string;
+
+  @ApiPropertyOptional({ example: 'novaSenha123' })
+  @IsOptional()
+  @IsString()
+  @MinLength(6)
+  password?: string;
+}

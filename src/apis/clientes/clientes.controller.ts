@@ -1,5 +1,5 @@
 // Importando modulos comuns do Nest
-import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe, Logger, HttpCode, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe, HttpCode, UseGuards } from '@nestjs/common';
 // Importando decoradores de documentação do swagger
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 // Importando serviços do cliente 
@@ -61,28 +61,44 @@ export class ClientesController {
 
     const result = this.clientesService.create(data);
 
-    this.logger.track(context, { email: data.email, action: 'end' }, context);
+    this.logger.track(context, { result, action: 'end' }, context);
 
     return result;
   }
 
-  /*@Put(':id')
+  @Put(':id')
   @HttpCode(204)
   @ApiOperation({ summary: 'Atualiza um cliente existente' })
-  update(@Param('id', ParseIntPipe) id: number, @Body() data: UpdateClienteDto) {
-    logger.log(`Atualizando cliente ID: ${id}`);
-    return this.clientesService.update(id, data);
+  update(@Param('id', ParseIntPipe) id: number, @Body() data: UpdateClienteDto): Promise<Boolean> {
+    const context = `${this.context}:update`;
+    this.logger.track(context, { id, data, action: 'start' }, context);
+
+    const result = this.clientesService.update(id, data);
+
+    this.logger.track(context, { id, result, action: 'end' }, context);
+
+    return result;
   }
 
   @Delete(':id')
   @HttpCode(204)
-  @ApiOperation({ summary: 'Deleta um cliente' })
+  @ApiOperation({
+    summary: 'Desativa um cliente (soft delete)',
+    description:
+      'Inativa o cliente no sistema definindo active=false, preservando o histórico.',
+  })
   remove(@Param('id', ParseIntPipe) id: number) {
-    logger.log(`Removendo cliente ID: ${id}`);
-    return this.clientesService.delete(id);
+    const context = `${this.context}:delete`;
+    this.logger.track(context, { id, action: 'start' }, context);
+
+    const result = this.clientesService.delete(id);
+
+    this.logger.track(context, { id, result, action: 'end' }, context);
+
+    return result;
   }
 
-  @Post(':id/depositar')
+  /*@Post(':id/depositar')
   @ApiOperation({ summary: 'Realiza depósito no saldo do cliente' })
   depositar(@Param('id', ParseIntPipe) id: number, @Body() { valor }: TransactionDto) {
     logger.log(`Depositando ${valor} no cliente ID: ${id}`);
