@@ -11,6 +11,8 @@ import { PrismaService } from './apis/prisma/prisma.service';
 // Importando modulos da aplicação
 import { ClientesModule } from './apis/clientes/clientes.module';
 import { LoggerModule } from './common/logger/logger.module';
+// Importando controladores
+import { HealthController } from './common/health/health.controller';
 // Importando Libs comuns de nossa aplicação
 import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
 
@@ -29,6 +31,7 @@ import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
     PrismaService,
     { provide: APP_GUARD, useClass: ThrottlerGuard },
   ],
+  controllers: [HealthController]
 })
 
 export class AppModule implements NestModule {

@@ -6,11 +6,11 @@ import { ClientesController } from './clientes.controller';
 import { ClientesService } from './clientes.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { LoggerService } from '../../common/logger/logger.service';
-import { UsersService } from 'src/auth/users/users.service';
-import { CryptoService } from 'src/common/crypto/crypto.service';
+import { UsersService } from '../../auth/users/users.service';
+import { CryptoService } from '../../common/crypto/crypto.service';
 import { JwtService } from '@nestjs/jwt';
 // Importando modulos
-import { UsersModule } from 'src/auth/users/users.module';
+import { UsersModule } from '../../auth/users/users.module';
 
 @Module({
   imports: [UsersModule],
