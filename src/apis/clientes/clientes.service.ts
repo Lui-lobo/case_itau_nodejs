@@ -25,7 +25,7 @@ export class ClientesService {
     private readonly logger: LoggerService,
     private readonly usersService: UsersService,
     private readonly cryptoService: CryptoService
-  ) {}
+  ) { }
 
   async getAll() {
     return getAllClientes(this.prisma, this.logger);
@@ -51,8 +51,18 @@ export class ClientesService {
     return depositar(this.prisma, this.logger, id, valor);
   }
 
-  async sacar(id: number, valor: number) {
-    return sacar(this.prisma, this.logger, id, valor);
+  async sacar(id: number, valor: number, user: {
+    id: number,
+    nome: string,
+    email: string,
+    password: string,
+    active: boolean,
+    saldo: number,
+    createdAt: Date,
+    updatedAt: Date
+
+  }) {
+    return sacar(this.prisma, this.logger, id, valor, user);
   }
 
   async getTransacoes(id: number, tipo?: 'credito' | 'debito', page?: number, limit?: number) {

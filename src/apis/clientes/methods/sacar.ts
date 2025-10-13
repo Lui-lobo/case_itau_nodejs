@@ -8,6 +8,7 @@ import {
   NotFoundException,
   BadRequestException,
   InternalServerErrorException,
+  UnauthorizedException,
 } from '@nestjs/common';
 
 export default async function sacar(
@@ -15,19 +16,39 @@ export default async function sacar(
   logger: LoggerService,
   id: number,
   valor: number,
+  user: {
+    id: number,
+    nome: string,
+    email: string,
+    password: string,
+    active: boolean,
+    saldo: number,
+    createdAt: Date,
+    updatedAt: Date
+  }
 ) {
   const context = 'sacar';
   const op = `${context}:execute`;
 
   logger.track(op, { id, valor, action: 'start' }, context);
 
-  // 🔹 Validação inicial
+  // Validação inicial
+  if (!user) {
+    logger.warn(`Usuário nao identificado tentando sacar dinheiro!`);
+    throw new UnauthorizedException('Usuário invalido!');
+  }
+
+  if (user.id !== id) {
+    logger.warn(`Usuário enviado é diferente do usuário que está logado! - Usuário logado: ${user.id} | Usuário enviado: ${id}`);
+    throw new UnauthorizedException('Usuário invalido!');
+  }
+
   if (valor <= 0) {
     logger.warn(`Valor inválido para saque: ${valor}`, context);
     throw new BadRequestException('O valor do saque deve ser maior que zero.');
   }
 
-  // 🔹 Busca o cliente
+  // Busca o cliente
   const cliente = await prisma.cliente.findUnique({ where: { id } });
 
   if (!cliente) {

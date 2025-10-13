@@ -1,5 +1,5 @@
 // Importando modulos comuns do Nest
-import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe, HttpCode, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe, HttpCode, UseGuards, Query, Req } from '@nestjs/common';
 // Importando decoradores de documentação do swagger
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 // Importando serviços do cliente 
@@ -113,11 +113,16 @@ export class ClientesController {
 
   @Post(':id/sacar')
   @ApiOperation({ summary: 'Realiza saque no saldo do cliente' })
-  sacar(@Param('id', ParseIntPipe) id: number, @Body() { valor }: TransactionDto) {
+  sacar(
+    @Param('id', ParseIntPipe) id: number, 
+    @Body() { valor }: TransactionDto,
+    @Req() req: any,
+  ) {
     const context = `${this.context}:withdraw`;
     this.logger.track(context, { id, action: 'start' }, context);
-
-    const result = this.clientesService.sacar(id, valor);
+    // Extraimos o usuário que está realizando a requisição
+    const user = req.user;
+    const result = this.clientesService.sacar(id, valor, user);
 
     this.logger.track(context, { id, result, action: 'end' }, context);
 

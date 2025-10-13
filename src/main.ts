@@ -7,14 +7,34 @@ import helmet from 'helmet';
 import { ValidationPipe } from '@nestjs/common';
 // importando Libs de documentação do swagger para nest
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+// Constantes
+const allowedOrigins = ['http://localhost:4200'];
 
 async function bootstrap() {
   // Definindo a aplicação
   const app = await NestFactory.create(AppModule);
-
   // Segurança básica
   app.use(helmet());
-  app.enableCors({ origin: true, credentials: true });
+  // Configurando CORS
+  app.enableCors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Origin not allowed by CORS policy: ${origin}`));
+      }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'x-client-id',
+      'x-client-secret',
+    ],
+    exposedHeaders: ['Authorization'],
+    credentials: true,
+    maxAge: 3600,
+  });
 
   // Validação global
   app.useGlobalPipes(new ValidationPipe({
