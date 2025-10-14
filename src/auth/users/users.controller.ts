@@ -9,6 +9,9 @@ import { RegisterClienteDto } from './dto/register-cliente.dto';
 import { LoginClienteDto } from './dto/login-cliente-dto';
 // Importando Guards
 import { ClientAuthGuard } from '../clients.guard';
+// Importando decoradores de documentação
+import { DocLoginCliente } from './docs/docLogin';
+import { DocRegisterCliente } from './docs/docRegister';
 
 @ApiTags('auth-cliente')
 @Controller('api/v1/auth')
@@ -18,6 +21,7 @@ export class UsersController {
   // registro de cliente (app precisa estar autenticado)
   @UseGuards(ClientAuthGuard)
   @Post('register')
+  @DocRegisterCliente()
   @ApiOperation({ summary: 'Registra um novo cliente (usuário final) para um app client' })
   async register(@Body() data: RegisterClienteDto) {
     return this.users.register(data);
@@ -26,6 +30,7 @@ export class UsersController {
   // login de cliente: precisa do client autenticado (camada 1) + credenciais do cliente
   @UseGuards(ClientAuthGuard)
   @Post('login')
+  @DocLoginCliente()
   @ApiOperation({ summary: 'Login do cliente (usuário final) vinculado ao client autenticado' })
   async login(@Req() req: any, @Body() data: LoginClienteDto) {
     const clientId = req.client.id as number; // anexado pelo ClientAuthGuard
