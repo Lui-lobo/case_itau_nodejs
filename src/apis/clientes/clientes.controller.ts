@@ -15,6 +15,15 @@ import { Cliente } from '@prisma/client';
 import { ClientAuthGuard } from '../../auth/clients.guard';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { returnCreateClientDto } from './dto/return-create-cliente.dto';
+// Importando decoradores de documentação
+import { DocSacar } from './docs/docSacar';
+import { DocListTransaction } from './docs/docListTransactions';
+import { DocDepositar } from './docs/docDepositar';
+import { DocDeleteCliente } from './docs/docDeleterCliente';
+import { DocUpdateCliente } from './docs/docUpdateCliente';
+import { DocCreateCliente } from './docs/docCreateCliente';
+import { DocGetClienteById } from './docs/docGetClienteById';
+import { DocListClientes } from './docs/docGetAllCliente';
 @UseGuards(ClientAuthGuard, JwtAuthGuard)
 @ApiTags('clientes')
 @Controller('api/v1/clientes')
@@ -28,6 +37,7 @@ export class ClientesController {
   ) {}
 
   @Get()
+  @DocListClientes()
   @ApiOperation({ summary: 'Lista todos os clientes' })
   async list(): Promise<Cliente[]> {
     const op = `${this.context}:list`;
@@ -41,6 +51,7 @@ export class ClientesController {
   }
 
   @Get(':id')
+  @DocGetClienteById()
   @ApiOperation({ summary: 'Busca um cliente pelo ID' })
   async get(@Param('id', ParseIntPipe) id: number): Promise<Cliente> {
     const op = `${this.context}:getById`;
@@ -54,6 +65,7 @@ export class ClientesController {
   }
 
   @Post()
+  @DocCreateCliente()
   @ApiOperation({ summary: 'Cria um novo cliente' })
   create(@Body() data: CreateClienteDto): Promise<returnCreateClientDto> {
     const context = `${this.context}:create`;
@@ -68,6 +80,7 @@ export class ClientesController {
 
   @Put(':id')
   @HttpCode(204)
+  @DocUpdateCliente()
   @ApiOperation({ summary: 'Atualiza um cliente existente' })
   update(@Param('id', ParseIntPipe) id: number, @Body() data: UpdateClienteDto): Promise<Boolean> {
     const context = `${this.context}:update`;
@@ -82,6 +95,7 @@ export class ClientesController {
 
   @Delete(':id')
   @HttpCode(204)
+  @DocDeleteCliente()
   @ApiOperation({
     summary: 'Desativa um cliente (soft delete)',
     description:
@@ -99,6 +113,7 @@ export class ClientesController {
   }
 
   @Post(':id/depositar')
+  @DocDepositar()
   @ApiOperation({ summary: 'Realiza depósito no saldo do cliente' })
   depositar(@Param('id', ParseIntPipe) id: number, @Body() { valor }: TransactionDto) {
     const context = `${this.context}:deposit`;
@@ -112,6 +127,7 @@ export class ClientesController {
   }
 
   @Post(':id/sacar')
+  @DocSacar()
   @ApiOperation({ summary: 'Realiza saque no saldo do cliente' })
   sacar(
     @Param('id', ParseIntPipe) id: number, 
@@ -130,6 +146,7 @@ export class ClientesController {
   }
 
   @Get(':id/transacoes')
+  @DocListTransaction()
   @ApiOperation({
     summary: 'Lista todas as transações de um cliente',
     description:

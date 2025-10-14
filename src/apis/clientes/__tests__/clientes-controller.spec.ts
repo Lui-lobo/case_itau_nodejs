@@ -115,9 +115,24 @@ describe('ClientesController', () => {
       const response = { message: 'Saque OK', novoSaldo: 50 };
       service.sacar.mockResolvedValue(response);
 
-      const result = await controller.sacar(1, { valor: 20 });
+      // Mockando usuário de teste
+      const user = { 
+        id: 1,
+        nome: 'teste',
+        email: 'teste@teste.com.br',
+        password: '1234567',
+        active: true,
+        saldo: 100,
+        createdAt: Date(),
+        updatedAt: Date()
+      }
+
+      // Mock do objeto Request com user dentro
+      const mockRequest = { user };
+
+      const result = await controller.sacar(1, { valor: 20 }, mockRequest);
       expect(result).toEqual(response);
-      expect(service.sacar).toHaveBeenCalledWith(1, 20);
+      expect(service.sacar).toHaveBeenCalledWith(1, 20, user);
     });
   });
 

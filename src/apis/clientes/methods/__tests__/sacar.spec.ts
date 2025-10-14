@@ -20,8 +20,21 @@ describe('sacar', () => {
       { id: 1, saldo: 50 },
       { id: 10, tipo: 'debito', valor: 50 },
     ]);
+
+    // Mockando usuário de teste
+    const user = { 
+      id: 1,
+      nome: 'teste',
+      email: 'teste@teste.com.br',
+      password: '1234567',
+      active: true,
+      saldo: 100,
+      createdAt: new Date("2025-10-11T23:00:11.800Z"),
+      updatedAt: new Date("2025-10-11T23:00:11.800Z")
+    }
+
     // Testando função
-    const result = await sacar(prisma as any, logger as any, 1, 50);
+    const result = await sacar(prisma as any, logger as any, 1, 50, user);
     // Checando os valores retornados pelas funções
     expect(prisma.transacao.create).toHaveBeenCalledWith({
       data: { tipo: 'debito', valor: expect.anything(), clienteId: 1 },
@@ -40,8 +53,20 @@ describe('sacar', () => {
       active: true,
       saldo: 10,
     });
+
+    // Mockando usuário de teste
+    const user = { 
+      id: 1,
+      nome: 'teste',
+      email: 'teste@teste.com.br',
+      password: '1234567',
+      active: true,
+      saldo: 100,
+      createdAt: new Date("2025-10-11T23:00:11.800Z"),
+      updatedAt: new Date("2025-10-11T23:00:11.800Z")
+    }
     // Checando os valores retornados pelas funções
-    await expect(sacar(prisma as any, logger as any, 1, 999))
+    await expect(sacar(prisma as any, logger as any, 1, 999, user))
       .rejects.toThrow('Saldo insuficiente para realizar o saque.');
   });
 });

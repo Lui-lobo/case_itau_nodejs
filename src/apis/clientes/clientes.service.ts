@@ -60,7 +60,6 @@ export class ClientesService {
     saldo: number,
     createdAt: Date,
     updatedAt: Date
-
   }) {
     return sacar(this.prisma, this.logger, id, valor, user);
   }
