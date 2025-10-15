@@ -57,4 +57,32 @@ describe('AuthCliente (Integration)', () => {
     expect(response.body).toHaveProperty('accessToken');
     expect(response.body.user.email).toBe('teste@mail.com');
   });
+
+    it('deve registrar um client com rotas limitadas', async () => {
+    const client = await factory.prisma.client.create({
+      data: {
+        name: 'Client com rotas limitas',
+        clientId: 'limited-client',
+        clientSecret: 'limited-client',
+        allowedRoutes: ['/api/v1/auth/'],
+      },
+    });
+
+    const response = await request(factory.getHttpServer())
+      .post('/api/v1/auth/register')
+      .set('x-client-id', client.clientId)
+      .set('x-client-secret', client.clientSecret)
+      .send({
+        nome: 'Usuário Teste',
+        email: 'teste-limited@email.com',
+        password: '123456',
+        clientId: client.id,
+      })
+      .expect(201);
+
+    expect(response.body).toMatchObject({
+      email: 'teste-limited@email.com',
+      clientId: client.id,
+    });
+  });
 });
