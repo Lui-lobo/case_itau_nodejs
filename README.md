@@ -14,10 +14,12 @@ API desenvolvida em **Node.js com NestJS e Prisma ORM**, estruturada para oferec
 6. [🧰 Boas Práticas Aplicadas](#-boas-práticas-aplicadas)
 7. [🧠 Padrão de Logs e Observabilidade](#-padrão-de-logs-e-observabilidade)
 8. [🧪 Testes Unitários e de Integração](#-testes-unitários-e-de-integração)
-9. [🚀 Execução e Scripts](#-execução-e-scripts)
-10. [📈 Futuras Melhorias](#-futuras-melhorias)
-11. [📄 Acesso à Documentação Swagger](#-acesso-à-documentação-swagger)
-12. [👨‍💻 Autor](#-autor)
+9. [⌨ Como rodar o projeto localmente](#-como-rodar-o-projeto-localmente)
+10. [🐳 Rodar com Docker](#-rodar-com-docker)
+11. [🚀 Execução e Scripts](#-execução-e-scripts)
+12. [📈 Futuras Melhorias](#-futuras-melhorias)
+13. [📄 Acesso à Documentação Swagger](#-acesso-à-documentação-swagger)
+14. [👨‍💻 Autor](#-autor)
 
 ---
 
@@ -178,6 +180,60 @@ O projeto conta com dois níveis de testes:
 - Testam fluxos como:
 - Registro e login de clientes
 - Depósito, saque e listagem de transações
+
+## ⌨ Como rodar o projeto localmente
+
+# ⚙️ 2. Clonar o repositório
+```bash
+git clone https://github.com/Lui-lobo/case_itau_nodejs.git
+cd case-itau-nodejs
+```
+
+# 📦 3. Instalar dependências
+```bash
+npm install
+```
+
+# 🧠 4. Configurar variáveis de ambiente
+Crie um arquivo .env na raiz do projeto (caso não exista):
+```bash
+# .env
+DATABASE_URL="file:./dev.db"
+PORT=8080
+NODE_ENV=development
+JWT_SECRET=default-secret
+```
+OBS: 💡 Por padrão, este projeto usa SQLite, então não é necessário nenhum banco externo.
+
+# 🧰 5. Criar e preparar o banco de dados
+Rode os comandos abaixo para gerar o Prisma Client e criar o banco SQLite:
+```bash
+npx prisma generate --schema=prisma/schema/schema.prisma
+npx prisma db push --schema=prisma/schema/schema.prisma
+```
+
+# 🧩 6. Rodar a aplicação em modo desenvolvimento
+```bash
+npm run start:dev
+```
+A aplicação estará disponível em: 👉 http://localhost:8080
+
+## 🐳 Rodar com Docker
+Caso prefira rodar a aplicação dentro de um container:
+
+# 🏗️ Build da imagem:
+```bash
+docker build -t case-itau-api .
+```
+
+# 🚀 Executar o container:
+```bash
+docker run -d -p 3000:3000 --name case-itau \
+  -e DATABASE_URL="file:/usr/src/app/prisma/dev.db" \
+  -e JWT_SECRET="default-secret" \
+  case-itau-api
+```
+A aplicação ficará acessível em: 👉 http://localhost:3000
 
 ## 🚀 Execução e Scripts
 
